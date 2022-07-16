@@ -1,0 +1,40 @@
+# Docker compose file for Observium
+# Maintained by somsakc@hotmail.com
+
+version: '3'
+
+services:
+  db:
+    image: mysql:5
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret2
+      - MYSQL_USER=osticket
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=osticket
+      - TZ=Etc/GMT+3
+
+    restart: unless-stopped
+
+  app:
+    image: pelandrun/osticket:1.16.1.0
+    volumes:
+      - ./plugings:/data/upload/include/plugins
+      - ./i18n:/data/upload/include/i18n
+      - ./logs:/var/log/nginx
+    environment:
+      - TZ=Etc/GMT+3
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=secret
+      - MYSQL_PREFIX=ost_
+      - MYSQL_DATABASE=osticket
+      - MYSQL_USER=osticket
+
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+networks:
+  default:
+    name: phpipam_default
