@@ -1,6 +1,6 @@
 # Deployment doesn't work on Alpine
-FROM php:7.3-cli AS deployer
-ENV OSTICKET_VERSION=1.14.3
+FROM php:8.0-cli AS deployer
+ENV OSTICKET_VERSION=1.16.1
 RUN set -x \
     && apt-get update \
     && apt-get install -y git-core \
@@ -14,13 +14,15 @@ RUN set -x \
     && chown -R root:root /data/upload/setup_hidden \
     && chmod -R go= /data/upload/setup_hidden
 
-FROM php:7.3-fpm-alpine
+FROM php:8.0-fpm-alpine
 MAINTAINER Martin Campbell <martin@campbellsoftware.co.uk>
 # environment for osticket
 ENV HOME=/data
 # setup workdir
 WORKDIR /data
 COPY --from=deployer /data/upload upload
+RUN set -x && \
+    apk add oniguruma-dev
 RUN set -x && \
     # requirements and PHP extensions
     apk add --no-cache --update \
@@ -36,7 +38,7 @@ RUN set -x && \
         libxml2 \
         icu \
         openssl && \
-    apk add --no-cache --virtual .build-deps \
+    apk add --virtual .build-deps \
         imap-dev \
         libpng-dev \
         curl-dev \
@@ -48,6 +50,7 @@ RUN set -x && \
         g++ \
         make \
         pcre-dev && \
+#	oniguruma-dev && \
     docker-php-ext-install gd curl ldap mysqli sockets gettext mbstring xml intl opcache && \
     docker-php-ext-configure imap --with-imap-ssl && \
     docker-php-ext-install imap && \
