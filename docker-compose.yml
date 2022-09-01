@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   app:
-    image: pelandrun/osticket:1.16.1.0
+    image: pelandrun/osticket:1.16.1
     volumes:
       - ./plugings:/data/upload/include/plugins
       - ./i18n:/data/upload/include/i18n
