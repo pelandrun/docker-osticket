@@ -1,5 +1,5 @@
-# Docker compose file for Observium
-# Maintained by somsakc@hotmail.com
+# Docker compose file for Osticket
+# Maintained by jcnet.ar@gmail.com
 
 version: '3'
 
